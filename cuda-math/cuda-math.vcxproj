@@ -78,7 +78,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <CudaCompile Include="KernelFunctions\KernelMath.cu" />
-    <CudaCompile Include="main.cu" />
+    <CudaCompile Include="test.cu" />
     <CudaCompile Include="Math1D\Math1D.cu" />
     <CudaCompile Include="Math2D\Math2D.cu" />
   </ItemGroup>
