@@ -1,30 +1,8 @@
 #include "Math1D.cuh"
 #include "../KernelFunctions/KernelMath.cuh"
 
-
-//__global__ void addKernel(int* c, const int* a, const int* b)
-//{
-//    int i = threadIdx.x;
-//    c[i] = a[i] + b[i];
-//}
-//
-//__global__ void subKernel(int* c, const int* a, const int* b)
-//{
-//    int i = threadIdx.x;
-//    c[i] = a[i] - b[i];
-//}
-//
-//__global__ void mulKernel(int* c, const int* a, const int* b)
-//{
-//    int i = threadIdx.x;
-//    c[i] = a[i] * b[i];
-//}
-//
-//__global__ void divKernel(int* c, const int* a, const int* b)
-//{
-//    int i = threadIdx.x;
-//    c[i] = a[i] / b[i];
-//}
+#define THREADS_PER_BLOCK 128
+#define THREADS_PER_BLOCK_MAXINDEX 127
 
 // Helper function for using CUDA to add vectors in parallel.
 cudaError_t Add1DCuda(int* c, const int* a, const int* b, unsigned int size) {
@@ -73,7 +51,8 @@ cudaError_t Add1DCuda(int* c, const int* a, const int* b, unsigned int size) {
     }
 
     // Launch a kernel on the GPU with one thread for each element.
-    addKernel <<<1, size >>> (dev_c, dev_a, dev_b);
+    // Making sure that there will always be room
+    addKernel <<<(size + THREADS_PER_BLOCK_MAXINDEX)/ THREADS_PER_BLOCK, THREADS_PER_BLOCK >>> (dev_c, dev_a, dev_b, size);
 
     // Check for any errors launching the kernel
     cudaStatus = cudaGetLastError();
@@ -151,7 +130,8 @@ cudaError_t Sub1DCuda(int* c, const int* a, const int* b, unsigned int size) {
     }
 
     // Launch a kernel on the GPU with one thread for each element.
-    subKernel <<<1, size >>>(dev_c, dev_a, dev_b);
+    // Making sure that there will always be room
+    subKernel <<<(size + THREADS_PER_BLOCK_MAXINDEX) / THREADS_PER_BLOCK, THREADS_PER_BLOCK >>> (dev_c, dev_a, dev_b, size);
 
     // Check for any errors launching the kernel
     cudaStatus = cudaGetLastError();
@@ -229,7 +209,8 @@ cudaError_t Mul1DCuda(int* c, const int* a, const int* b, unsigned int size) {
     }
 
     // Launch a kernel on the GPU with one thread for each element.
-    mulKernel << <1, size >> > (dev_c, dev_a, dev_b);
+    // Making sure that there will always be room
+    mulKernel <<<(size + THREADS_PER_BLOCK_MAXINDEX) / THREADS_PER_BLOCK, THREADS_PER_BLOCK >>> (dev_c, dev_a, dev_b, size);
 
     // Check for any errors launching the kernel
     cudaStatus = cudaGetLastError();
@@ -307,7 +288,8 @@ cudaError_t Div1DCuda(int* c, const int* a, const int* b, unsigned int size) {
     }
 
     // Launch a kernel on the GPU with one thread for each element.
-    divKernel <<<1, size>>>(dev_c, dev_a, dev_b);
+    // Making sure that there will always be room
+    divKernel <<<(size + THREADS_PER_BLOCK_MAXINDEX) / THREADS_PER_BLOCK, THREADS_PER_BLOCK >>> (dev_c, dev_a, dev_b, size);
 
     // Check for any errors launching the kernel
     cudaStatus = cudaGetLastError();

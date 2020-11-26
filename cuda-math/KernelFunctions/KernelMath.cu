@@ -1,37 +1,43 @@
 #include "KernelMath.cuh"
 #include <stdio.h>
 
-__global__ void addKernel(int* c, const int* a, const int* b)
+__global__ void addKernel(int* c, const int* a, const int* b, const int N)
 {
-    int i = threadIdx.x;
-    c[i] = a[i] + b[i];
+    int tid = blockIdx.x * blockDim.x + threadIdx.x;
+    if (tid < N) {
+        c[tid] = a[tid] + b[tid];
+    }
 }
 
-__global__ void subKernel(int* c, const int* a, const int* b)
+__global__ void subKernel(int* c, const int* a, const int* b, const int N)
 {
-    int i = threadIdx.x;
-    c[i] = a[i] - b[i];
+    int tid = blockIdx.x * blockDim.x + threadIdx.x;
+    if (tid < N) {
+        c[tid] = a[tid] - b[tid];
+    }
 }
 
-__global__ void mulKernel(int* c, const int* a, const int* b)
+__global__ void mulKernel(int* c, const int* a, const int* b, const int N)
 {
-    int i = threadIdx.x;
-    c[i] = a[i] * b[i];
+    int tid = blockIdx.x * blockDim.x + threadIdx.x;
+    if (tid < N) {
+        c[tid] = a[tid] * b[tid];
+    }
 }
 
-__global__ void divKernel(int* c, const int* a, const int* b)
+__global__ void divKernel(int* c, const int* a, const int* b, const int N)
 {
-    int i = threadIdx.x;
-    c[i] = a[i] / b[i];
+    int tid = blockIdx.x * blockDim.x + threadIdx.x;
+    if (tid < N) {
+        c[tid] = a[tid] / b[tid];
+    }
 }
 
 __global__ void mul2DKernel(int* c, const int* a, const int* b, int widthA, int heightA) 
 {
-    /*int ROW = blockIdx.y * blockDim.y + threadIdx.y;
-    int COL = blockIdx.x * blockDim.x + threadIdx.x;*/
+    int aROW = blockIdx.y * blockDim.y + threadIdx.y;
+    int bCOL = blockIdx.x * blockDim.x + threadIdx.x;
 
-    int aROW = threadIdx.y;
-    int bCOL = threadIdx.x;
 
     // Checking if the ROW/COL exceed the actual number of ROW/COL
     // widthA = heightB
